@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 /**
+ * 配置资源服务器和授权服务器
  * Created by xujingfeng on 2017/8/7.
  */
 @Configuration
@@ -28,6 +29,9 @@ public class OAuth2ServerConfig {
 
     private static final String DEMO_RESOURCE_ID = "order";
 
+    /**
+     * 资源服务
+     */
     @Configuration
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
@@ -57,6 +61,9 @@ public class OAuth2ServerConfig {
     }
 
 
+    /**
+     * 认证服务
+     */
     @Configuration
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
@@ -68,6 +75,13 @@ public class OAuth2ServerConfig {
         @Autowired
         UserDetailsService userDetailsService;
 
+        /**
+         * ClientDetailsServiceConfigurer：用来配置客户端详情服务（ClientDetailsService），
+         * 客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+         *
+         * @param clients
+         * @throws Exception
+         */
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             //配置两个客户端,一个用于password认证一个用于client认证
@@ -85,6 +99,12 @@ public class OAuth2ServerConfig {
                     .secret("123456");
         }
 
+        /**
+         * AuthorizationServerEndpointsConfigurer:用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)
+         *
+         * @param endpoints
+         * @throws Exception
+         */
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints
@@ -98,6 +118,12 @@ public class OAuth2ServerConfig {
             endpoints.reuseRefreshTokens(true);
         }
 
+        /**
+         * AuthorizationServerSecurityConfigurer：用来配置令牌端点(Token Endpoint)的安全约束
+         *
+         * @param oauthServer
+         * @throws Exception
+         */
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
             //允许表单认证
